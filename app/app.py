@@ -436,6 +436,7 @@ elif page == "Customer Prediction":
 
     # Ensure feature order matches the trained model
     # ---------------------------------------------------------
+<<<<<<< HEAD
 # ALIGN INPUT FEATURES WITH TRAINING FEATURES
 # ---------------------------------------------------------
 
@@ -494,6 +495,64 @@ input_data = aligned_input[
     # PREDICT BUTTON
     # -----------------------------------------------------
 if st.button(
+=======
+    # ALIGN INPUT FEATURES WITH TRAINING FEATURES
+    # ---------------------------------------------------------
+
+    # Create a copy so the original input remains unchanged
+    aligned_input = input_data.copy()
+
+    # Handle features created by pandas merge operations
+    # (_x and _y suffixes)
+    for feature in feature_names:
+
+        if feature in aligned_input.columns:
+            continue
+
+        if feature.endswith("_x"):
+
+            base_feature = feature[:-2]
+
+            if base_feature in aligned_input.columns:
+                aligned_input[feature] = aligned_input[
+                    base_feature
+                ]
+
+        elif feature.endswith("_y"):
+
+            base_feature = feature[:-2]
+
+            if base_feature in aligned_input.columns:
+                aligned_input[feature] = aligned_input[
+                    base_feature
+                ]
+
+    # Check whether any required features are still missing
+    missing_features = [
+        feature
+        for feature in feature_names
+        if feature not in aligned_input.columns
+    ]
+
+    if missing_features:
+
+        st.error(
+            f"Missing model features: {missing_features}"
+        )
+
+        st.stop()
+
+    # Put features in EXACTLY the same order
+    # used during model training
+    input_data = aligned_input[
+        feature_names
+    ].copy()
+
+    # -----------------------------------------------------
+    # PREDICT BUTTON
+    # -----------------------------------------------------
+    if st.button(
+>>>>>>> 72e960a (Fix Streamlit dashboard errors)
         "🚀 Predict Churn Risk",
         use_container_width=True
     ):
